@@ -57,7 +57,7 @@ __global__ void computeKernel(vector3 *pos, vector3 *vel, double *devMass){
 //Parameters: None
 //Returns: None
 //Side Effect: Modifies the hPos and hVel arrays with the new positions and accelerations after 1 INTERVAL
-void compute(){
+extern "C" void compute(){
 	static int initialized = 0; //remembers value between calls
 	if (!initialized) {
 		checkCuda(cudaMalloc((void **)&d_hPos, sizeof(vector3) * NUMENTITIES), "allocating d_hPos");
