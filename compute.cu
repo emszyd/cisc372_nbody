@@ -33,7 +33,7 @@ __global__ void computeKernel(vector3 *pos, vector3 *vel, double *devMass){
 			double dy = pos[i][1] - pos[j][1];
 			double dz = pos[i][2] - pos[j][2];
 			
-			double magnitiudeSq = dx*dx + dy*dy + dz*dz;
+			double magnitiude_sq = dx*dx + dy*dy + dz*dz;
 			double magnitude = sqrt(magnitiude_sq);
 			double accelMag = -1.0 * GRAV_CONSTANT * devMass[j] / magnitiude_sq;
 			
@@ -58,7 +58,7 @@ __global__ void computeKernel(vector3 *pos, vector3 *vel, double *devMass){
 //Returns: None
 //Side Effect: Modifies the hPos and hVel arrays with the new positions and accelerations after 1 INTERVAL
 void compute(){
-	static int intialized = 0; //remembers value between calls
+	static int initialized = 0; //remembers value between calls
 	if (!initialized) {
 		checkCuda(cudaMalloc((void **)&d_hPos, sizeof(vector3) * NUMENTITIES), "allocating d_hPos");
 		checkCuda(cudaMalloc((void **)&d_hVel, sizeof(vector3) * NUMENTITIES), "allocating d_hVel");
@@ -71,7 +71,7 @@ void compute(){
 	}
 
 	int threadsPerBlock = 256;
-	int blocks = (NUMENTITIES + threadsPerBlock -1) / threadsperBlock; //calculates how many GPU blocks are needed
+	int blocks = (NUMENTITIES + threadsPerBlock -1) / threadsPerBlock; //calculates how many GPU blocks are needed
 	computeKernel<<<blocks, threadsPerBlock>>>(d_hPos, d_hVel, d_mass); //launches the kernel on the GPU
 
 	checkCuda(cudaGetLastError(), "launching computeKernel"); //checks for errors in kernel launch
